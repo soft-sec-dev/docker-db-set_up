@@ -15,5 +15,5 @@ services:
       - "3000:3000"
     environment:
       - PORT=3000
-      - URI=mongodb://localhost:4000
+      - URI=mongodb://db:27017
     restart: 'no'
