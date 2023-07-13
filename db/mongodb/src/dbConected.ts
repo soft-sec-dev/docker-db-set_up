@@ -1,22 +1,25 @@
 import { MongoClient, ServerApiVersion } from "mongodb";
+export default class MondoDbConections {
+    private uri = process.env.URI as string || 'mongodb://db:27017'
 
-const uri = process.env.URI as string
-
-const client = new MongoClient(uri, {
-    serverApi: {
-        version: ServerApiVersion.v1,
-        strict: true,
-        deprecationErrors: true
+    private async firstWayToConect() {
+        const client = new MongoClient(this.uri, {
+            serverApi: {
+                version: ServerApiVersion.v1,
+                strict: true,
+                deprecationErrors: true
+            }
+        })
+        try {
+            await client.connect()
+            await client.db('videos').command({ ping: 1 })
+            console.log("Pinged your deploumend. You successfully conneced to MongoDb")
+        } finally {
+            await client.close()
+        }
     }
-})
-
-export default async function run() {
-    try {
-        client.connect()
-        await client.db("admin").command({ ping: 1 })
-        console.log("Pinged your deployment. You successfully connected to MongoDB!")
-    } finally {
-        await client.close()
+    public main(){
+        return this.firstWayToConect()
     }
 }
 
