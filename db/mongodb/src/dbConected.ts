@@ -1,4 +1,4 @@
-import { MongoClient, ServerApiVersion } from "mongodb";
+import {Collection, Db, MongoClient,ServerApiVersion } from "mongodb";
 export default class MondoDbConections {
     private uri = process.env.URI as string || 'mongodb://db:27017'
 
@@ -32,8 +32,29 @@ export default class MondoDbConections {
             client.close()
         }
     }
+
+    //? Create the conection and create the dbName and return this
+    private async thirdWayToConnectdb(){
+        return MongoClient.connect(this.uri)
+            .then(client => {
+                const db = client.db('nuevos-videos')
+                return db
+            })
+    }
+
+    private async thirdWayToConnectdbHelper1(db:Db){
+        const videos_collections = db.collection('primer-nuevo_video')
+        videos_collections.insertOne({title:'Hello World'})
+            .then(()=>{
+                console.log('Video anadido')
+            })
+    }
+
     public main(){
-        return this.secontWayToConectdb()
+        return this.thirdWayToConnectdb()
+        .then((db)=>{
+                return this.thirdWayToConnectdbHelper1(db)
+        })
     }
 }
 
