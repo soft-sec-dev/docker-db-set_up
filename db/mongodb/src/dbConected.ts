@@ -18,8 +18,22 @@ export default class MondoDbConections {
             await client.close()
         }
     }
+
+    private async secontWayToConectdb(){
+        const client = new MongoClient(this.uri)
+        try{
+                const database = client.db('sample_example')
+                const movies = database.collection("movies")
+
+                //? Query
+                const query = {title: 'Fist movies'}
+                const movie = await movies.insertOne(query)
+        }finally{
+            client.close()
+        }
+    }
     public main(){
-        return this.firstWayToConect()
+        return this.secontWayToConectdb()
     }
 }
 
